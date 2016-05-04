@@ -1,0 +1,69 @@
+role user permission 之间的关系
+
+role(one)<------>user(many)
+role(many)<------->permission(many)
+user(many)<------>permission(many)
+
+TODO:1.维护 role 和 user的关系. 2.实现对role和user的CRUD 3.HIBERNATE的事务. 4.二级缓存(Ecache)
+
+犯了一个低级错误:在springmvc 配置文件中加入声明式事务时，由于tx命名空间没有正确引入，纠结了半小时
+
+关于 DOM 对象和 jQuery对象相互转换
+
+     >>>jQuery对象转DOM对象
+
+        由于jQuery对象本身是一个集合。所以如果jQuery对象要转换为Dom对象则必须取出其中的某一项，一般可通过索引取出。
+        如： $("#msg")[0]，$("div").eq(1)[0]，$("div").get()[1]，$("td")[5]
+
+        这些都是Dom对象，可以使用Dom中的方法，但不能再使用jQuery的方法。
+
+        以下几种写法都是正确的：
+        $("#msg").html();
+        $("#msg")[0].innerHTML;
+        $("#msg").eq(0)[0].innerHTML;
+        $("#msg").get(0).innerHTML;
+
+     >>>DOM对象转jQuery对象
+
+        对于已经是一个DOM对象，只需要用$()把DOM对象包装起来，就可以获得一个jQuery对象了。$(DOM对象)
+        如：var v=document.getElementById("v"); //DOM对象
+        var $v=$(v); //jQuery对象
+
+     >>>用 jQUery 编写分页时，动态生成 button
+
+        row.find("#button").append("<button class='btn btn-info' value='"+ users[i].userId +"' onclick='editUser(this)'>编辑
+                                    </button><button class='btn btn-danger' value='"+ users[i].userId +"' onclick='deleteUser(this)'>删除</button>").attr("class","col-lg-2");
+        function editUser(editButton){   //此时传进来的是一个 DOM 对象
+            var $editButton = $(editButton); //将 DOM 对象转为 jQUery 对象
+            var $buttParent = $editButton.parent(); //获取当前对象的父元素
+            var $userName = $buttParent.siblings("#userName"); //获取 $buttParent 的同级元素, id 为 userName
+        }
+
+
+引入shiro
+    shiro依赖
+     <dependency>
+       <groupId>org.apache.shiro</groupId>
+       <artifactId>shiro-core</artifactId>
+       <version>${shiro-version}</version>
+     </dependency>
+     <dependency>
+       <groupId>org.apache.shiro</groupId>
+       <artifactId>shiro-web</artifactId>
+       <version>${shiro-version}</version>
+     </dependency>
+     <dependency>
+       <groupId>org.apache.shiro</groupId>
+       <artifactId>shiro-spring</artifactId>
+       <version>${shiro-version}</version>
+     </dependency>
+     <dependency>
+       <groupId>org.apache.shiro</groupId>
+       <artifactId>shiro-ehcache</artifactId>
+       <version>${shiro-version}</version>
+     </dependency>
+     <dependency>
+       <groupId>org.apache.shiro</groupId>
+       <artifactId>shiro-quartz</artifactId>
+       <version>${shiro-version}</version>
+     </dependency>

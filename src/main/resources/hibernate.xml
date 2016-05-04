@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="${c3p0.driverClass}"/>
+        <property name="jdbcUrl" value="${c3p0.url}"/>
+        <property name="user" value="${c3p0.userName}"/>
+        <property name="password" value="${c3p0.password}"/>
+        <property name="minPoolSize" value="${c3p0.minPoolSize}"/>
+        <property name="initialPoolSize" value="${c3p0.initialPoolSize}"/>
+        <property name="maxIdleTime" value="${c3p0.maxIdleTime}"/>
+        <property name="maxPoolSize" value="${c3p0.maxPoolSize}"/>
+        <property name="checkoutTimeout" value="${c3p0.checkoutTimeout}"/>
+        <property name="acquireIncrement" value="${c3p0.acquireIncrement}"/>
+    </bean>
+
+    <!-- 配置 hibernate 的 sessionFactory -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name ="dataSource" ref="dataSource"/>
+        <property name ="hibernateProperties">
+        <props>
+            <!-- 数据库方言 -->
+            <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+            <!-- 执行操作时,是否在控制台打印sql-->
+            <prop key="hibernate.show_sql">true</prop>
+            <!-- 是否格式化 sql 语句-->
+            <prop key="hibernate.format_sql">true</prop>
+            <prop key="hibernate.connection.url">jdbc:mysql://localhost:3306/db_shiro</prop>
+            <prop key="hibernate.connection.driver_class">com.mysql.jdbc.Driver</prop>
+            <!-- 设置 hibernate 的事务隔离级别-->
+            <prop key="connection.isolation">2</prop>
+            <!-- 删除对象后 使其OID置为null-->
+            <prop key="use_identifier_rollback">true</prop>
+            <!-- 设定JDBC的statement读取数据是每次从数据库中取出的记录数-->
+            <prop key="hibernate.jdbc.fetch_size">100</prop>
+            <!-- 设定对数据库进行批量增,删,该的时候批次大小-->
+            <prop key="jdbc.batch_size">30</prop>
+
+            <!-- 是否开启二级缓存 -->
+            <prop key="hibernate.cache.use_second_level_cache">false</prop>
+            <!-- 是否开启查询缓存 -->
+            <prop key="hibernate.cache.use_query_cache">false</prop>
+            <!-- 是否自动提交事务 -->
+            <!--如果配置了事物 autocommit要设置成false 把提交的行为交给事物管理,
+            如果配置为true那就还是由hibernate管理，就需要手动提交了-->
+            <prop key="hibernate.connection.autocommit">false</prop>
+            <!-- 指定hibernate在何时释放JDBC连接 -->
+            <prop key="hibernate.connection.release_mode">auto</prop>
+            <!-- 创建session方式 hibernate4.x 的方式 -->
+            <prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext</prop>
+            <!-- javax.persistence.validation.mode默认情况下是auto的，就是说如果不设置的话它是会自动去你的classpath下面找一个bean-validation**包
+                所以把它设置为none即可 -->
+            </props>
+        </property>
+        <property name="packagesToScan">
+            <list>
+                <value>com.mrbai.entity</value>
+            </list>
+        </property>
+        <property name="annotatedClasses">
+            <list>
+                <value>com.mrbai.entity.TRole</value>
+                <value>com.mrbai.entity.TUser</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <!-- 注意：@Transactional 需要放在哪个层，这个配置就要放在哪个层的配置中 -->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+
+    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+</beans>

@@ -1,0 +1,37 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+.myBody{
+    background-size:cover;
+    /*background:url(../img/456.jpg) no-repeat;*/
+}
+.myContainer{
+    width: 600px;
+    height: 600px;
+    /*border: 1px  yellow solid;*/
+    margin: 200px auto;
+    transform-style: preserve-3d;
+    perspective: 1200px;
+
+}
+.ke{
+    border-radius: 5px;
+    width: 300px;
+    height: 437px;
+    /*border: 1px blue solid;*/
+    display: block;
+    margin:  70px auto;
+    background: url(../image/Love.jpg)  0px 0px / 300px 437px no-repeat;
+    box-shadow: -15px 15px 10px #333;/* 影子偏移量 影子距离 模糊程度 影子颜色*/
+    transform: rotateX(50deg) rotateY(3deg)  rotateZ(-25deg);
+    transition: all 1s ease-out;
+
+}
+
+.ke:hover{
+    transform: rotate3D(0,0,0,0deg);
+    box-shadow: -100px 100px 5px rgba(33,33,33,0.3);
+    /*filter:alpha(opacity=50); */
+    /*opacity:0.7;*/
+}
