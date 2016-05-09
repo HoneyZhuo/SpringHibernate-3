@@ -70,6 +70,7 @@
                 /static/** = anon <!--资源文件不涉及权限，全部跳过-->
                 /user/** = anon <!-- 注册和登录登出不涉及权限，全部跳过-->
                 /code/** = anon<!--生成验证码不涉及权限，全部跳过-->
+                /register.jsp = anon
                 /logout = logout
                 /test/toLogin = authc
                 /toMain/** = authc
