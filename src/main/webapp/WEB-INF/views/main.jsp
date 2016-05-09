@@ -3,33 +3,29 @@
 <%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <html>
 <head>
-    <META HTTP-EQUIV="pragma" CONTENT="no-cache">
-    <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate">
-    <META HTTP-EQUIV="expires" CONTENT="Wed, 26 Feb 1997 08:21:57 GMT">
     <title>Title</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
     <script src="${pageContext.request.contextPath}/static/js/jquery-2.2.3.min.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
     <style type="text/css">
         .box {
-            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6699FF', endColorstr='#6699FF'); /*  IE */
+           /* filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6699FF', endColorstr='#6699FF'); !*  IE *!
             background-image: linear-gradient(bottom, #6699FF 0%, #6699FF 100%);
             background-image: -o-linear-gradient(bottom, #6699FF 0%, #6699FF 100%);
             background-image: -moz-linear-gradient(bottom, #6699FF 0%, #6699FF 100%);
             background-image: -webkit-linear-gradient(bottom, #6699FF 0%, #6699FF 100%);
-            background-image: -ms-linear-gradient(bottom, #6699FF 0%, #6699FF 100%);
-
+            background-image: -ms-linear-gradient(bottom, #6699FF 0%, #6699FF 100%);*/
+            background-image: url("/static/image/456.jpg");
             margin: 0 auto;
             position: relative;
             width: 100%;
             height: 100%;
         }
-
-        .boxLocation {
-            padding: 50px;
-            padding-left: 70px;
-            padding-right: 50px;
-            padding-bottom: 100px;
+        td{text-align: center}
+        th{text-align: center}
+        .container{
+            padding-right: 0px;
+            padding-left: 0px;
         }
         .pageLocation{
             padding: 100px;
@@ -91,7 +87,7 @@
                             row.find("#userName").text(users[i].userName).attr("class","col-lg-1");
                             row.find("#account").text(users[i].account).attr("class","col-lg-1");
                             row.find("#roleName").text(users[i].tRole.roleName).attr("class","col-lg-1");
-                            row.find("#email").text(users[i].email).attr("class","col-lg-1");
+                            row.find("#email").text(users[i].email).attr("class","col-lg-2");
                             row.find("#telePhone").text(users[i].telephone).attr("class","col-lg-2");
                             row.find("#regDate").text(users[i].regDate).attr("class","col-lg-2");
                             row.find("#button").append("<button class='btn btn-info' value='"+ users[i].userId +"' onclick='editUser(this)'>编辑</button><button class='btn btn-danger' value='"+ users[i].userId +"' onclick='deleteUser(this)'>删除</button>").attr("class","col-lg-2");
@@ -276,12 +272,14 @@
         </div>
     </div>
 </div>
-<div class="container box boxLocation">
+<div class="container box">
     <div class="row">
-        <div class="col-md-9 col-md-offset-2">
+        <div class="col-md-2">
+
+        </div>
+        <div class="col-md-10" style="padding-left: 2px">
             <nav class="navbar navbar-default">
                 <div class="container-fluid">
-                    <!-- Brand and toggle get grouped for better mobile display -->
                     <div class="navbar-header">
                         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                                 data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -293,7 +291,6 @@
                         <a class="navbar-brand" href="#">Brand</a>
                     </div>
 
-                    <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav">
                             <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
@@ -338,36 +335,34 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-1">
-        <div class="btn-group-vertical" role="group" aria-label="...">
-            <button type="button" class="btn btn-default">1</button>
-            <button type="button" class="btn btn-default">2</button>
+        <div class="col-md-2 btn-group-vertical" role="group" aria-label="...">
+            <button type="button" class="btn btn-success" style="width: 200px">1</button>
+            <button type="button" class="btn btn-success" style="width: 200px">2</button>
 
-            <div class="btn-group" role="group">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <div class="btn-group" role="group" style="width: 200px">
+                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Dropdown
                     <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu">
+                <ul class="dropdown-menu" style="width: 200px">
                     <li><a href="#">Dropdown link</a></li>
                     <li><a href="#">Dropdown link</a></li>
                 </ul>
             </div>
         </div>
-        </div>
-        <div class="col-md-9 col-md-offset-1">
-            <table class="table table-striped table-hover" contenteditable="true">
+        <div class="col-md-10" style="padding-left: 2px">
+            <table class="table table-responsive table-hover" style="border-collapse: separate" contenteditable="true">
                 <thead>
-                <tr>
+                <tr class="label-warning">
                     <th hidden="hidden"></th>
-                    <th class="col-lg-1"><span class="col-md-offset-2">#</span></th>
-                    <th class="col-lg-1"><span class="col-md-offset-1">昵称</span></th>
-                    <th class="col-lg-1"><span class="col-md-offset-2">账号</span></th>
-                    <th class="col-lg-1"><span class="col-md-offset-1">角色</span></th>
-                    <th class="col-lg-1"><span class="col-md-offset-3">邮箱</span></th>
-                    <th class="col-lg-2"><span class="col-md-offset-1">联系方式</span></th>
-                    <th class="col-lg-2"><span class="col-md-offset-0">注册时间</span></th>
-                    <th class="col-lg-2"><span class="col-md-offset-3">操作</span></th>
+                    <th class="col-lg-1"><span >#</span></th>
+                    <th class="col-lg-1"><span >昵称</span></th>
+                    <th class="col-lg-1"><span >账号</span></th>
+                    <th class="col-lg-1"><span >角色</span></th>
+                    <th class="col-lg-2"><span >邮箱</span></th>
+                    <th class="col-lg-2"><span >联系方式</span></th>
+                    <th class="col-lg-2"><span >注册时间</span></th>
+                    <th class="col-lg-2"><span >操作</span></th>
                 </tr>
                 </thead>
                 <tbody>
