@@ -28,8 +28,8 @@ public class RoleServiceImpl extends DaoServiceImpl implements DaoService, RoleS
     }
 
 
-    public TRole getRoleByRoleName(String roleName) {
-        String hql = "select tr from TRole tr where tr.roleName = ?1";
-        return tRoleDAO.get(hql,roleName);
+    public TRole getRoleByRoleKey(String roleKey) {
+        String hql = "select tr from TRole tr where tr.roleKey = ?1";
+        return tRoleDAO.get(hql,roleKey);
     }
 }

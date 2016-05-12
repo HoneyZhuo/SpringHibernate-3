@@ -28,14 +28,15 @@ public class MyRealm extends AuthorizingRealm {
     UserService userService;
 
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        String account = (String) principals.getPrimaryPrincipal();
+       /* String account = (String) principals.getPrimaryPrincipal();
         TUser tUser = userService.getUserByAccount(account);
-        String roleName = tUser.gettRole().getRoleName();
+        String roleName = tUser.gettRoles().getRoleName();
         Set<String> roleNames = new HashSet<String>();
         roleNames.add(roleName);
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         info.setRoles(roleNames);
-        return info;
+        return info;*/
+        return null;
     }
 
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {

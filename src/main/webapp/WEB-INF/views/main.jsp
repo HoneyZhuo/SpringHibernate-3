@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"
          isELIgnored="false" %>
 <%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <html>
 <head>
     <title>Title</title>
@@ -9,13 +10,13 @@
     <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
     <style type="text/css">
         .box {
-           /* filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6699FF', endColorstr='#6699FF'); !*  IE *!
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6699FF', endColorstr='#6699FF'); /*  IE */
             background-image: linear-gradient(bottom, #6699FF 0%, #6699FF 100%);
             background-image: -o-linear-gradient(bottom, #6699FF 0%, #6699FF 100%);
             background-image: -moz-linear-gradient(bottom, #6699FF 0%, #6699FF 100%);
             background-image: -webkit-linear-gradient(bottom, #6699FF 0%, #6699FF 100%);
-            background-image: -ms-linear-gradient(bottom, #6699FF 0%, #6699FF 100%);*/
-            background-image: url("/static/image/456.jpg");
+            background-image: -ms-linear-gradient(bottom, #6699FF 0%, #6699FF 100%);
+            /*background-image: url("/static/image/456.jpg");*/
             margin: 0 auto;
             position: relative;
             width: 100%;
@@ -23,6 +24,11 @@
         }
         td{text-align: center}
         th{text-align: center}
+        li{text-align: center}
+        body{padding-top: 55px}
+        .mb_btn{
+            width: 200px;
+        }
         .container{
             padding-right: 0px;
             padding-left: 0px;
@@ -34,32 +40,54 @@
     </style>
     <script type="text/javascript">
         $(function () {
-            var pageNo = 1;
-            search(pageNo);
-            $("#prev").click(function () {
-                if (pageNo > 1){
-                    pageNo --;
-                    search(pageNo);
-                    $("#currentPageNo").text(pageNo);
-                }else{
-                    $(this).attr("class","disabled");
-                }
-            });
-            $("#next").click(function () {
-                pageNo ++;
+            /* 用户管理 */
+            $("#userManage").click(function () {
+                var pageNo = 1;
                 search(pageNo);
-                var a = $("tbody").children("tr");
-                if (a.size() < 6 && a.size() > 1){
-                    $(this).attr("onclick","disabled");
-                }
-                if (a.size() == 1){
-                    pageNo --;
-                    alert("已经是最后一页");
-                    return false;
-                }
-                $("#currentPageNo").text(pageNo);
+                $("#prev").click(function () {
+                    if (pageNo > 1){
+                        $("#checkAll").prop("checked",false);
+                        pageNo --;
+                        search(pageNo);
+                        $("#currentPageNo").text(pageNo);
+                    }else{
+                        $(this).attr("class","disabled");
+                    }
+                });
+                $("#next").click(function () {
+                    $("#checkAll").prop("checked",false);
+                    pageNo ++;
+                    search(pageNo);
+                    var a = $("tbody").children("tr");
+                    if (a.size() < 6 && a.size() > 1){
+                        $(this).attr("onclick","disabled");
+                    }
+                    if (a.size() == 1){
+                        pageNo --;
+                        alert("已经是最后一页");
+                        return false;
+                    }
+                    $("#currentPageNo").text(pageNo);
+                });
+                $("#showUserTable").show();
+                $("#showRoleTable").hide();
+                $("#checkAll").click(function () {
+                    if ($(this).is(':checked')){
+                        $(":input[name='checkItem']:checkbox").prop("checked",true);
+//                        alert($(":input[name='checkItem']:checkbox").prop("checked",true).eq(4).val());
+                    }else{
+                        $(":input[name='checkItem']:checkbox").prop("checked",false);
+                        $(":input[name='checkItem']:checkbox").prop("checked","");
+                    }
+                });
+            });
+            /* 角色管理 */
+            $("#roleManage").click(function () {
+                $("#showUserTable").hide();
+                $("#showRoleTable").show();
             });
         });
+        /* 获取用户信息，并分页 */
         function search(p) {
             $.ajax({
                 url : "${pageContext.request.contextPath}/material/getUserByPage",
@@ -83,15 +111,15 @@
                                 row.attr("class","warning");
                             }
                             row.find("#userId").text(users[i].userId).attr("hidden","hidden");
-                            row.find("#rowNo").text(i+1).attr("class","col-lg-1");
+                            row.find("#rowNo").append("<div class='row'><input name='checkItem' type='checkbox' value='"+ users[i].userId +"' class='col-lg-6'/><span class='col-lg-6'>"+ (i+1) +"</span></div>");
                             row.find("#userName").text(users[i].userName).attr("class","col-lg-1");
                             row.find("#account").text(users[i].account).attr("class","col-lg-1");
-                            row.find("#roleName").text(users[i].tRole.roleName).attr("class","col-lg-1");
+                            row.find("#roleName").text("管理员"/*users[i].tRoles[0].roleName*/).attr("class","col-lg-1");
                             row.find("#email").text(users[i].email).attr("class","col-lg-2");
                             row.find("#telePhone").text(users[i].telephone).attr("class","col-lg-2");
-                            row.find("#regDate").text(users[i].regDate).attr("class","col-lg-2");
+                            row.find("#regDate").text(users[i].regDate).attr("class","col-lg-1");
                             row.find("#button").append("<button class='btn btn-info' value='"+ users[i].userId +"' onclick='editUser(this)'>编辑</button><button class='btn btn-danger' value='"+ users[i].userId +"' onclick='deleteUser(this)'>删除</button>").attr("class","col-lg-2");
-                            row.appendTo($("tbody"));
+                            row.appendTo($("#MyTbody"));
                             row.show();
                         }
                     }
@@ -100,6 +128,7 @@
                 alert("访问服务器失败,请稍后重试");
             });
         }
+        /* 通过为每一条数据赋予删除按钮,删除一条用户信息 */
         function deleteUser(deleButton) {
             var userId = $(deleButton).val(); //onclick="deleteUser(this)"
             if (confirm("是否要删除这条数据")){
@@ -118,6 +147,7 @@
                 });
             }
         }
+        /* 为模态框赋值 */
         function editUser(editButton) {
             var $buttParent = $(editButton).parent("td");
 
@@ -157,6 +187,7 @@
             $("#editUser").find("#selectorCopy").hide();;
             $("#editUser").modal('show');
         }
+        /* 通过为每一条数据赋予编辑按钮,调用editUser(editButton)函数,修改一条用户信息*/
         function changeUser(subForm) {
             var userId = $(subForm).find(":input[name='userId']").val();
 
@@ -182,17 +213,20 @@
                     $.post("${pageContext.request.contextPath}/material/editUser",{userId : userId, userName : userName, email : email, telephone : telephone, roleName : roleName}, function (data) {
                         if (data == undefined){
                             alert("访问服务器失败，请重新操作");
+                            location.reload(false);
                         }else if(eval("(" + data + ")").stat == true){
                             alert(eval("(" + data + ")").msg);
                             location.reload(false);
                         }
                     }).error(function () {
                         alert("访问服务器失败，请重新操作");
+                        location.reload(false);
                     });
                 }
             }
             return false;
         }
+        /* 退出登录 */
         function logout() {
             if (confirm("确定要退出吗？")){
                 $.get("${pageContext.request.contextPath}/user/logout",function (data) {
@@ -207,6 +241,34 @@
                     alert("访问服务器失败，请重试");
                 });
             }
+        }
+        /* 获取选中的记录,并返回所有被选中记录的集合 */
+        function checkItem() {
+            var checkItem = $(":input[name='checkItem']:checked");
+            var len = checkItem.length;
+            var userIds = new Array();
+            for (var i = 0;i < len; i++){
+                var userId = checkItem.eq(i).val();
+                userIds[i]=userId;
+            }
+            return userIds;
+        }
+        /* 通过导航栏编辑按钮修改一条数据,一次仅限修改一条 */
+        function rootEditUser() {
+            alert(checkItem()[0]);
+            return false;
+        }
+        /* 通过导航栏删除按钮删除选中的数据,可以删除一条或多条数据 */
+        function rootDeleUser(){
+
+        }
+        /* 通过导航栏新增按钮,增加一条数据 */
+        function rootAddUser() {
+
+        }
+        /* 为选中的记录分配角色,一次仅限选中一条 */
+        function rootAssignRole() {
+
         }
     </script>
 </head>
@@ -273,59 +335,29 @@
     </div>
 </div>
 <div class="container box">
-    <div class="row">
-        <div class="col-md-2">
-
-        </div>
-        <div class="col-md-10" style="padding-left: 2px">
-            <nav class="navbar navbar-default">
+    <div class="row" style="width: 1363px">
+        <div class="col-md-12">
+            <nav class="navbar navbar-default label-info navbar-fixed-top">
                 <div class="container-fluid">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                                data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
+                    <div class="navbar-header col-lg-8">
                         <a class="navbar-brand" href="#">Brand</a>
                     </div>
-
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                        <ul class="nav navbar-nav">
-                            <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-                            <li><a href="#">Link</a></li>
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                   aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Action</a></li>
-                                    <li><a href="#">Another action</a></li>
-                                    <li><a href="#">Something else here</a></li>
-                                    <li role="separator" class="divider"></li>
-                                    <li><a href="#">Separated link</a></li>
-                                    <li role="separator" class="divider"></li>
-                                    <li><a href="#">One more separated link</a></li>
-                                </ul>
-                            </li>
-                        </ul>
                         <form class="navbar-form navbar-left" role="search">
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Search">
+                                <input type="text" class="form-control" placeholder="账号">
                             </div>
-                            <button type="submit" class="btn btn-default">Submit</button>
+                            <button type="submit" class="btn btn-info">查询</button>
                         </form>
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href="#">Link</a></li>
-                            <li class="dropdown">
+                            <li class="dropdown" style="width: 160px">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                   aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                                   aria-haspopup="true" aria-expanded="false"><img src="${pageContext.request.contextPath}/static/image/MyLove.jpeg" style="width: 25px; height: 25px" class="img-circle">${account}<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#">Action</a></li>
-                                    <li><a href="#">Another action</a></li>
-                                    <li><a href="#">Something else here</a></li>
+                                    <li><a href="#">Settings</a></li>
+                                    <li><a href="#">密码修改</a></li>
                                     <li role="separator" class="divider"></li>
-                                    <li><a href="#">Separated link</a></li>
+                                    <li><a href="#" onclick="logout()">Logout</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -334,38 +366,61 @@
             </nav>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-2 btn-group-vertical" role="group" aria-label="...">
-            <button type="button" class="btn btn-success" style="width: 200px">1</button>
-            <button type="button" class="btn btn-success" style="width: 200px">2</button>
 
-            <div class="btn-group" role="group" style="width: 200px">
-                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <div class="row" style="margin: -1px">
+        <div class="col-md-2 btn-group-vertical label-info" role="group" style="padding: 0px;height: 570px" aria-label="...">
+            <button type="button" class="btn btn-info mb_btn" id="userManage">用户管理</button>
+            <button type="button" class="btn btn-info mb_btn" id="roleManage">角色管理</button>
+            <button type="button" class="btn btn-info mb_btn" id="menuManage">菜单管理</button>
+            <div class="btn-group mb_btn" role="group">
+                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Dropdown
                     <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu" style="width: 200px">
-                    <li><a href="#">Dropdown link</a></li>
-                    <li><a href="#">Dropdown link</a></li>
+                <ul class="progress-bar-info dropdown-menu" style="width: 202px">
+                    <li class="mb_btn"><a href="#">Dropdown link</a></li>
+                    <li class="mb_btn"><a href="#">Dropdown link</a></li>
+                </ul>
+            </div>
+            <div class="btn-group mb_btn" role="group">
+                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Dropdown
+                    <span class="caret"></span>
+                </button>
+                <ul class="progress-bar-info dropdown-menu" style="width: 202px">
+                    <li class="mb_btn"><a href="#">Dropdown link</a></li>
+                    <li class="mb_btn"><a href="#">Dropdown link</a></li>
                 </ul>
             </div>
         </div>
-        <div class="col-md-10" style="padding-left: 2px">
-            <table class="table table-responsive table-hover" style="border-collapse: separate" contenteditable="true">
+        <%-- 用户管理 --%>
+        <div class="col-md-10" style="padding: 0px" id="showUserTable"  hidden="hidden">
+            <ol class="breadcrumb">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">系统基础管理</a></li>
+                <li class="active">用户管理</li>
+            </ol>
+            <div class="btn-group" style="padding-bottom: 5px">
+                <button class="btn btn-success" onclick="return rootAddUser()">新增</button>
+                <button class="btn btn-warning" onclick="return rootEditUser()">编辑</button>
+                <button class="btn btn-danger" onclick="return rootDeleUser()">删除</button>
+                <button class="btn btn-primary" onclick="return rootAssignRole()">分配角色</button>
+            </div>
+            <table class="table table-hover table-condensed">
                 <thead>
-                <tr class="label-warning">
+                <tr class="warning">
                     <th hidden="hidden"></th>
-                    <th class="col-lg-1"><span >#</span></th>
-                    <th class="col-lg-1"><span >昵称</span></th>
-                    <th class="col-lg-1"><span >账号</span></th>
-                    <th class="col-lg-1"><span >角色</span></th>
-                    <th class="col-lg-2"><span >邮箱</span></th>
-                    <th class="col-lg-2"><span >联系方式</span></th>
-                    <th class="col-lg-2"><span >注册时间</span></th>
-                    <th class="col-lg-2"><span >操作</span></th>
+                    <th class="col-lg-1"><div class="row"><input type="checkbox" id="checkAll" class="col-lg-6"/><span class="col-lg-6">#</span></div></th>
+                    <th class="col-lg-1"><span>昵称</span></th>
+                    <th class="col-lg-1"><span>账号</span></th>
+                    <th class="col-lg-1"><span>角色</span></th>
+                    <th class="col-lg-2"><span>邮箱</span></th>
+                    <th class="col-lg-1"><span>联系方式</span></th>
+                    <th class="col-lg-1"><span>注册时间</span></th>
+                    <th class="col-lg-2"><span>操作</span></th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody id="MyTbody">
                     <tr id="show_user" hidden="hidden">
                         <td id="userId"></td>
                         <td id="rowNo"></td>
@@ -379,34 +434,84 @@
                     </tr>
                 </tbody>
             </table>
+            <div class="col-md-offset-4">
+                <nav>
+                    <ul class="pagination pageLocation" id="page">
+                        <li>
+                            <a href="javascript:void(0)" aria-label="Previous" id="prev">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" id="currentPageNo">1</a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" aria-label="Next" id="next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <%-- 角色管理 --%>
+        <div class="col-md-10" style="padding: 0px" id="showRoleTable"  hidden="hidden">
+            <ol class="breadcrumb">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">系统基础管理</a></li>
+                <li class="active">角色管理</li>
+            </ol>
+            <div class="btn-group" style="padding-bottom: 5px">
+                <button class="btn btn-success" onclick="return rootAddRole()">新增</button>
+                <button class="btn btn-warning" onclick="return rootEditRole()">编辑</button>
+                <button class="btn btn-danger" onclick="return rootDeleRole()">删除</button>
+                <button class="btn btn-primary" onclick="return rootAssignPerm()">分配权限</button>
+            </div>
+            <table class="table table-hover table-condensed">
+                <thead>
+                <tr class="warning">
+                    <th hidden="hidden"></th>
+                    <th class="col-lg-1"><div class="row"><input type="checkbox" id="checkRoleAll" class="col-lg-6"/><span class="col-lg-6">#</span></div></th>
+                    <th class="col-lg-1"><span>角色名</span></th>
+                    <th class="col-lg-1"><span>状态</span></th>
+                    <th class="col-lg-1"><span>roleKey</span></th>
+                    <th class="col-lg-2"><span>描述</span></th>
+                </tr>
+                </thead>
+                <tbody id="myTbody_role">
+                <tr id="show_role" hidden="hidden">
+                    <td id="roleId"></td>
+                    <td id="rowNum"></td>
+                    <td id="roleName_role"></td>
+                    <td id="state"></td>
+                    <td id="roleKey"></td>
+                    <td id="description"></td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="col-md-offset-4">
+                <nav>
+                    <ul class="pagination pageLocation" id="page_role">
+                        <li>
+                            <a href="javascript:void(0)" aria-label="Previous" id="prev_role">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" id="currentPageNo_role">1</a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" aria-label="Next" id="next_role">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
     </div>
-    <div class="btn-group col-md-offset-10">
-        <button class="btn bg-warning" onclick="logout()">Logout</button>
-    </div>
-    <div class="row">
-        <div class="col-md-offset-5">
-            <nav>
-                <ul class="pagination pageLocation" id="page">
-                    <li>
-                        <a href="javascript:void(0)" aria-label="Previous" id="prev">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <li><a href="#" id="currentPageNo">1</a></li>
-                    <%--<li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">5</a></li>--%>
-                    <li>
-                        <a href="javascript:void(0)" aria-label="Next" id="next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div>
+
+
 </div>
 </body>
 </html>

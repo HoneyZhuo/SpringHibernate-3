@@ -10,5 +10,5 @@ import com.mrbai.service.base.DaoService;
 public interface RoleService extends DaoService {
 
 
-    TRole getRoleByRoleName(String roleName);
+    TRole getRoleByRoleKey(String roleKey);
 }

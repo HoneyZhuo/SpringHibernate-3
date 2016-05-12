@@ -67,6 +67,7 @@
             <list>
                 <value>com.mrbai.entity.TRole</value>
                 <value>com.mrbai.entity.TUser</value>
+                <value>com.mrbai.entity.TPermission</value>
             </list>
         </property>
     </bean>
