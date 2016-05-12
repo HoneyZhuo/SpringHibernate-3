@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by MirBai
@@ -129,12 +131,13 @@ public class UserController {
         java.sql.Date reg_date = new java.sql.Date(new Date().getTime());
         tUser.setRegDate(reg_date);
 
-        String roleName = "student";
-        TRole tRole = roleService.getRoleByRoleName(roleName);
-        tUser.settRole(tRole);
+        String roleKey = "SUPER";
+        TRole tRole = roleService.getRoleByRoleKey(roleKey);
+        Set<TRole> tRoles = new HashSet<TRole>();
+        tRoles.add(tRole);
+        tUser.settRoles(tRoles);
 
         userService.registUser(tUser);
-        System.out.println("");
         logger.info("注册成功 账号:{} 注册时间:{}", tUser.getAccount(), reg_date);
         return "redirect:/material/toMain";
     }

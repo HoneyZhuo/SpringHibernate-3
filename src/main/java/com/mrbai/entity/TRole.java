@@ -6,22 +6,26 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.Set;
 
 /**
  * Created by MirBai
- * on 2016/4/24.
+ * on 2016/5/11.
  */
 @Entity
 @Table(name = "t_role", schema = "db_shiro")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class TRole implements Serializable {
+public class TRole implements Serializable{
 
     private static final long serialVersionUID = 1L;
 
     private String roleId;
     private String roleName;
-    private Collection<TUser> tUsers;
+    private String roleKey;
+    private String description;
+    private Set<TUser> tUsers;
+    private Set<TPermission> tPermissions;
+
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
@@ -44,13 +48,67 @@ public class TRole implements Serializable {
         this.roleName = roleName;
     }
 
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "tRole")
+    @Basic
+    @Column(name = "role_key")
+    public String getRoleKey() {
+        return roleKey;
+    }
+
+    public void setRoleKey(String roleKey) {
+        this.roleKey = roleKey;
+    }
+
+    @Basic
+    @Column(name = "description")
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TRole tRole = (TRole) o;
+
+        if (roleId != null ? !roleId.equals(tRole.roleId) : tRole.roleId != null) return false;
+        if (roleName != null ? !roleName.equals(tRole.roleName) : tRole.roleName != null) return false;
+        if (roleKey != null ? !roleKey.equals(tRole.roleKey) : tRole.roleKey != null) return false;
+        if (description != null ? !description.equals(tRole.description) : tRole.description != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = roleId != null ? roleId.hashCode() : 0;
+        result = 31 * result + (roleName != null ? roleName.hashCode() : 0);
+        result = 31 * result + (roleKey != null ? roleKey.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        return result;
+    }
+
+    @ManyToMany(mappedBy = "tRoles")
     @JsonIgnore
-    public Collection<TUser> gettUsers() {
+    public Set<TUser> gettUsers() {
         return tUsers;
     }
 
-    public void settUsers(Collection<TUser> tUsers) {
+    public void settUsers(Set<TUser> tUsers) {
         this.tUsers = tUsers;
+    }
+
+    @ManyToMany
+    @JoinTable(name = "t_role_perm", schema = "db_shiro", joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"), inverseJoinColumns = @JoinColumn(name = "perm_id", referencedColumnName = "perm_id"))
+    public Set<TPermission> gettPermissions() {
+        return tPermissions;
+    }
+
+    public void settPermissions(Set<TPermission> tPermissions) {
+        this.tPermissions = tPermissions;
     }
 }
