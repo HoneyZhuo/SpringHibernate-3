@@ -1,5 +1,6 @@
 package com.mrbai.controller.controller;
 
+import com.mrbai.entity.TPermission;
 import com.mrbai.entity.TRole;
 import com.mrbai.entity.TUser;
 import com.mrbai.service.RoleService;
@@ -18,7 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by MirBai
@@ -103,6 +106,51 @@ public class MaterialController {
         return null;
     }
 
+
+    /* 角色管理 */
+    @RequestMapping(value = "/getRoleByPage", method = RequestMethod.POST, produces = "text/html;charset=UTF-8")
+    public @ResponseBody String getRoleByPage(int pageNo){
+        List<TRole> tRoles = roleService.getRoleByPage(pageNo);
+        if (tRoles != null){
+            ReturnManager returnManager = new ReturnManager();
+            returnManager.setMsg(tRoles);
+            returnManager.setStat(true);
+            try {
+                String success = objectMapper.writeValueAsString(returnManager);
+                return success;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+    /* 新增角色 */
+    @RequestMapping(value = "addRole", method = RequestMethod.POST, produces = "text/html;UTF-8")
+    public @ResponseBody String addRole(String roleName,String roleKey,String description,HashSet<TPermission> permissions,boolean flag){
+        if (flag=true){
+            TRole tRole = new TRole();
+            tRole.setRoleName(roleName);
+            tRole.setRoleKey(roleKey);
+            tRole.setDescription(description);
+            tRole.settPermissions(permissions);
+            roleService.addRole(tRole);
+            String roleId =tRole.getRoleId();
+            logger.info(roleId);
+            if (roleId != null){
+                ReturnManager returnManager = new ReturnManager();
+                returnManager.setMsg(tRole);
+                returnManager.setStat(true);
+                try {
+                    String success = objectMapper.writeValueAsString(returnManager);
+                    return success;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+        return null;
+    }
     @RequestMapping("/toMain")
     public String toMain(Model model){
         Subject subject = SecurityUtils.getSubject();
