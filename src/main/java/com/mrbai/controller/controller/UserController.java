@@ -131,11 +131,9 @@ public class UserController {
         java.sql.Date reg_date = new java.sql.Date(new Date().getTime());
         tUser.setRegDate(reg_date);
 
-        String roleKey = "SUPER";
+        String roleKey = "SIMPLE";
         TRole tRole = roleService.getRoleByRoleKey(roleKey);
-        Set<TRole> tRoles = new HashSet<TRole>();
-        tRoles.add(tRole);
-        tUser.settRoles(tRoles);
+        tUser.settRole(tRole);
 
         userService.registUser(tUser);
         logger.info("注册成功 账号:{} 注册时间:{}", tUser.getAccount(), reg_date);

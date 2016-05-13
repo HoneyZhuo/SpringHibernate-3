@@ -148,6 +148,9 @@ public class DaoImpl<T> implements DAO<T> {
         if (param != null && param.length > 0){
             for (int i = 0; i < param.length; i++) {
                 query.setParameter(i + 1 + "", param[i]);
+                System.out.println("-----------------");
+                System.out.println(param[i]);
+                System.out.println("------------------");
             }
         }
         return query.executeUpdate();

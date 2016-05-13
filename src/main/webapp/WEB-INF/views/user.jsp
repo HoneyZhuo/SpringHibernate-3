@@ -1,6 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 <html lang="zh-CN">
 <head>
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="This is my page">
+
     <title>用户</title>
     <script type="application/javascript">
         /**
@@ -35,7 +41,7 @@
                             row.find("#rowNo").append("<div class='row'><input name='checkItem' type='checkbox' value='"+ users[i].userId +"' class='col-lg-6'/><span class='col-lg-6'>"+ (i+1) +"</span></div>");
                             row.find("#userName").text(users[i].userName).attr("class","col-lg-1");
                             row.find("#account").text(users[i].account).attr("class","col-lg-1");
-                            row.find("#roleName").text("管理员"/*users[i].tRoles[0].roleName*/).attr("class","col-lg-1");
+                            row.find("#roleName").text(users[i].tRole.roleName).attr("class","col-lg-1");
                             row.find("#email").text(users[i].email).attr("class","col-lg-2");
                             row.find("#telePhone").text(users[i].telephone).attr("class","col-lg-2");
                             row.find("#regDate").text(users[i].regDate).attr("class","col-lg-1");
@@ -130,16 +136,16 @@
             $("#newTele").val(telephone);
             $(":input[name='telephoneCopy']").val(telephone);
 
-            var roleName = $buttParent.siblings("#roleName").text();
-            if (roleName == "student"){
-                $("option[name='student']").attr("selected", true);
-                $("option[name='studentCopy']").attr("selected", true);
-            }else if(roleName == "teacher"){
-                $("option[name='teacher']").attr("selected", true);
-                $("option[name='teacherCopy']").attr("selected", true);
-            }else if(roleName == "admin"){
-                $("option[name='admin']").attr("selected", true);
-                $("option[name='adminCopy']").attr("selected", true);
+            var roleKey = $buttParent.siblings("#roleKey").text();
+            if (roleKey == "SUPER"){
+                $("option[name='SUPER']").attr("selected", true);
+                $("option[name='SUPERCopy']").attr("selected", true);
+            }else if(roleKey == "ADMIN"){
+                $("option[name='ADMIN']").attr("selected", true);
+                $("option[name='ADMINCopy']").attr("selected", true);
+            }else if(roleKey == "SIMPLE"){
+                $("option[name='SIMPLE']").attr("selected", true);
+                $("option[name='SIMPLECopy']").attr("selected", true);
             }
             $("#editUser").find(":input[name='userId']").hide();
             $("#editUser").find(":input[name='nameCopy']").hide();
@@ -161,9 +167,9 @@
             var telephone = $(subForm).find(":input[name='telephone']").val();
             var telephoneCopy = $(subForm).find(":input[name='telephoneCopy']").val();
 
-            var roleName = $(subForm).find("#selector").val();
-            var roleNameCopy = $(subForm).find("#selectorCopy").val();
-            if (userName == userNameCopy && email == emailCopy && telephone == telephoneCopy && roleName == roleNameCopy){
+            var roleKey = $(subForm).find("#selector").val();
+            var roleKeyCopy = $(subForm).find("#selectorCopy").val();
+            if (userName == userNameCopy && email == emailCopy && telephone == telephoneCopy && roleKey == roleKeyCopy){
                 if(confirm("没有数据被修改，是否放弃编辑")){
                     $("#editUser").modal('hide');
                 }
@@ -171,7 +177,7 @@
             }else{
                 if(confirm("确定要修改吗?")){
                     $("#editUser").modal('hide');
-                    $.post("${pageContext.request.contextPath}/material/editUser",{userId : userId, userName : userName, email : email, telephone : telephone, roleName : roleName}, function (data) {
+                    $.post("${pageContext.request.contextPath}/material/editUser",{userId : userId, userName : userName, email : email, telephone : telephone, roleKey : roleKey}, function (data) {
                         if (data == undefined){
                             alert("访问服务器失败，请重新操作");
                             location.reload(false);
@@ -275,15 +281,15 @@
                     <div class="form-group">
                         <div class="input-group">
                             <span class="input-group-addon left-addon">角&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;色</span>
-                            <select class="form-control" id="selector" name="roleName">
-                                <option name="admin">admin</option>
-                                <option name="teacher">teacher</option>
-                                <option name="student">student</option>
+                            <select class="form-control" id="selector" name="roleKey">
+                                <option name="SUPER">SUPER</option>
+                                <option name="ADMIN">ADMIN</option>
+                                <option name="SIMPLE">SIMPLE</option>
                             </select>
                             <select class="form-control" id="selectorCopy">
-                                <option name="adminCopy">admin</option>
-                                <option name="teacherCopy">teacher</option>
-                                <option name="studentCopy">student</option>
+                                <option name="SUPERCopy">SUPER</option>
+                                <option name="ADMINCopy">ADMIN</option>
+                                <option name="SIMPLECopy">SIMPLE</option>
                             </select>
                         </div>
                     </div>

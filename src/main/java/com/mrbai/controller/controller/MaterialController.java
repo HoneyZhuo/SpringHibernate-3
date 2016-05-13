@@ -86,8 +86,8 @@ public class MaterialController {
 
     @RequestMapping(value = "/editUser", method = RequestMethod.POST, produces = "text/html;charset=utf-8")
     public
-    @ResponseBody String editUser(String userId, String userName, String email, String telephone, String roleName){
-        TRole tRole = roleService.getRoleByRoleKey(roleName);
+    @ResponseBody String editUser(String userId, String userName, String email, String telephone, String roleKey){
+        TRole tRole = roleService.getRoleByRoleKey(roleKey);
         if (tRole != null){
             ReturnManager returnManager = new ReturnManager();
             Object[] values = new Object[]{userName, email, telephone, tRole, userId};

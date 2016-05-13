@@ -92,7 +92,7 @@ public class TRole implements Serializable{
         return result;
     }
 
-    @ManyToMany(mappedBy = "tRoles")
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "tRole")
     @JsonIgnore
     public Set<TUser> gettUsers() {
         return tUsers;

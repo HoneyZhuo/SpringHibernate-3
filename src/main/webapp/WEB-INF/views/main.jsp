@@ -4,6 +4,11 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <html>
 <head>
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="This is my page">
     <title>Title</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
     <script src="${pageContext.request.contextPath}/static/js/jquery-2.2.3.min.js"></script>

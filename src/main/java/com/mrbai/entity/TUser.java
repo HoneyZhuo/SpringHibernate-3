@@ -2,9 +2,12 @@ package com.mrbai.entity;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.Set;
@@ -28,7 +31,8 @@ public class TUser implements Serializable{
     private String email;
     private Date regDate;
     private String salt;
-    private Set<TRole> tRoles;
+    private String roleId;
+    private TRole tRole;
     private String credentialsSalt;
 
     @Transient
@@ -154,14 +158,24 @@ public class TUser implements Serializable{
         return result;
     }
 
-    @ManyToMany
-    @JoinTable(name = "t_user_role", schema = "db_shiro", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
-    @JsonIgnore
-    public Set<TRole> gettRoles() {
-        return tRoles;
+    @ManyToOne
+    @JoinColumn(name = "role_Id")
+    public TRole gettRole() {
+        return tRole;
     }
 
-    public void settRoles(Set<TRole> tRoles) {
-        this.tRoles = tRoles;
+    public void settRole(TRole tRole) {
+        this.tRole = tRole;
+    }
+
+    //@Basic
+    @Column(name = "role_Id")
+    @Transient
+    public String getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(String roleId) {
+        this.roleId = roleId;
     }
 }
