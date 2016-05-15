@@ -30,7 +30,10 @@
         td{text-align: center}
         th{text-align: center}
         li{text-align: center}
-        body{padding-top: 55px}
+        body{padding-top: 55px;}
+        .mb_form{
+            text-align: center;
+        }
         .mb_btn{
             width: 200px;
         }
@@ -53,6 +56,8 @@
             $("#roleManage").click(function () {
                 showRoles();
             });
+            /* 初始化弹出框 */
+            $('[data-toggle="popover"]').popover();
         });
     </script>
 </head>

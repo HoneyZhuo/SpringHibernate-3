@@ -1,6 +1,7 @@
 package com.mrbai.service.Impl;
 
 import com.mrbai.dao.base.DAO;
+import com.mrbai.entity.TPermission;
 import com.mrbai.entity.TRole;
 import com.mrbai.service.RoleService;
 import com.mrbai.service.base.DaoService;
@@ -42,5 +43,26 @@ public class RoleServiceImpl extends DaoServiceImpl implements DaoService, RoleS
 
     public void addRole(TRole tRole) {
         tRoleDAO.save(tRole);
+    }
+
+    public int editRole(Object[] roles) {
+        String hql = "update TRole tr set tr.roleName=?1,tr.roleKey=?2,tr.description=?3 where tr.roleId = ?4";
+        return tRoleDAO.executeHql(hql,roles);
+    }
+
+    public int deleteRole(Object[] roleIdList) {
+        String hql = "delete from TRole where roleId in (?1)";
+        return tRoleDAO.executeHqlIn(hql, roleIdList);
+    }
+
+    public TRole getRoleByRoleId(String roleId) {
+        String hql = "select tr from TRole tr where tr.roleId = ?1";
+        return tRoleDAO.get(hql,roleId);
+    }
+
+    public void updateRolePerm(String roleId, List<TPermission> tPermissions) {
+        TRole tRole = getRoleByRoleId(roleId);
+        tRole.settPermissions(tPermissions);
+        tRoleDAO.update(tRole);
     }
 }

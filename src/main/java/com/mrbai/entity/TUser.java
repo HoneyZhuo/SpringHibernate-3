@@ -1,16 +1,11 @@
 package com.mrbai.entity;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.hibernate.annotations.*;
-import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.Set;
 
 /**
  * Created by MirBai
@@ -158,7 +153,7 @@ public class TUser implements Serializable{
         return result;
     }
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_Id")
     public TRole gettRole() {
         return tRole;

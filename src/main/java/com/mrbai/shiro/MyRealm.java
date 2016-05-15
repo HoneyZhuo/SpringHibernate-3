@@ -1,5 +1,7 @@
 package com.mrbai.shiro;
 
+import com.mrbai.entity.TPermission;
+import com.mrbai.entity.TRole;
 import com.mrbai.entity.TUser;
 import com.mrbai.service.UserService;
 import org.apache.shiro.authc.AuthenticationException;
@@ -14,6 +16,7 @@ import org.apache.shiro.util.ByteSource;
 
 import javax.annotation.Resource;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -28,15 +31,24 @@ public class MyRealm extends AuthorizingRealm {
     UserService userService;
 
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-       /* String account = (String) principals.getPrimaryPrincipal();
+        String account = (String) principals.getPrimaryPrincipal();
         TUser tUser = userService.getUserByAccount(account);
-        String roleName = tUser.gettRoles().getRoleName();
+        TRole tRole = tUser.gettRole();
+        String roleName = tRole.getRoleName();
         Set<String> roleNames = new HashSet<String>();
         roleNames.add(roleName);
+
+        List<TPermission> permission = tRole.gettPermissions();
+        Set<String> permNames = new HashSet<String>();
+        for (int i = 0; i < permission.size(); i++) {
+            TPermission tPermission =  permission.get(i);
+            permNames.add(tPermission.getPermName());
+        }
+
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         info.setRoles(roleNames);
-        return info;*/
-        return null;
+        info.setStringPermissions(permNames);
+        return info;
     }
 
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {

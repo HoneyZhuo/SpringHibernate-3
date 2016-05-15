@@ -50,10 +50,12 @@ public class DaoImpl<T> implements DAO<T> {
     @SuppressWarnings("unchecked")
     public List<T> find(String hql, Object[] param) {
         Query query = getSession().createQuery(hql);
-        if (param != null && param.length > 0){
+        if (param != null && param.length > 0 && !hql.contains("in")){
             for (int i = 0; i < param.length; i++) {
                 query.setParameter(i+1 +"",param[i]);
             }
+        }else if (param != null && param.length > 0 && hql.contains("in")){
+            query.setParameterList(1 +"", param);
         }
         return query.list();
     }
@@ -61,10 +63,12 @@ public class DaoImpl<T> implements DAO<T> {
     @SuppressWarnings("unchecked")
     public List<T> find(String hql, List<Object> param) {
         Query query = getSession().createQuery(hql);
-        if (param != null && param.size() > 0){
+        if (param != null && param.size() > 0 && !hql.contains("in")){
             for (int i = 0; i < param.size(); i++) {
                 query.setParameter(i + 1 +"", param.get(i));
             }
+        }else if (param != null && param.size() > 0 && hql.contains("in")){
+                query.setParameterList(1 +"", param);
         }
         return query.list();
     }
@@ -143,16 +147,20 @@ public class DaoImpl<T> implements DAO<T> {
         return getSession().createQuery(hql).executeUpdate();
     }
 
-    public Integer executeHql(String hql, Object... param) {
+    public Integer executeHql(String hql, Object[] param) {
         Query query = getSession().createQuery(hql);
         if (param != null && param.length > 0){
             for (int i = 0; i < param.length; i++) {
                 query.setParameter(i + 1 + "", param[i]);
-                System.out.println("-----------------");
-                System.out.println(param[i]);
-                System.out.println("------------------");
             }
         }
+        return query.executeUpdate();
+    }
+
+    @SuppressWarnings("unchecked")
+    public Integer executeHqlIn(String hql, Object... param) {
+        Query query = getSession().createQuery(hql);
+        query.setParameterList(1 + "", param);
         return query.executeUpdate();
     }
 

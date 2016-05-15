@@ -27,4 +27,5 @@ public interface UserService extends DaoService {
 
     int editUser(Object[] values);
 
+    int deleteUsers(Object[] userIdList);
 }

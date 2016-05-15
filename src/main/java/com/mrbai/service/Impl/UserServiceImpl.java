@@ -76,4 +76,9 @@ public class UserServiceImpl extends DaoServiceImpl implements UserService,DaoSe
         String hql = "update TUser set userName = ?1, email = ?2, telephone = ?3, tRole = ?4 where userId = ?5";
         return tUserDAO.executeHql(hql, values);
     }
+
+    public int deleteUsers(Object[] userIdList) {
+        String hql = "delete from TUser where userId in (?1)";
+        return tUserDAO.executeHqlIn(hql, userIdList);
+    }
 }

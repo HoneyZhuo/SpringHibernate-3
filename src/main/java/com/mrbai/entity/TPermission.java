@@ -4,6 +4,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -15,10 +16,9 @@ import java.util.Set;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class TPermission {
     private String permId;
-    private String permission;
-    private String roleId;
+    private String permName;
     private String description;
-    private Set<TRole> tRoles;
+    private List<TRole> tRoles;
 
     @Id
     @Column(name = "perm_id")
@@ -31,23 +31,13 @@ public class TPermission {
     }
 
     @Basic
-    @Column(name = "permission")
-    public String getPermission() {
-        return permission;
+    @Column(name = "perm_name")
+    public String getPermName() {
+        return permName;
     }
 
-    public void setPermission(String permission) {
-        this.permission = permission;
-    }
-
-    @Basic
-    @Column(name = "role_id")
-    public String getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(String roleId) {
-        this.roleId = roleId;
+    public void setPermName(String permName) {
+        this.permName = permName;
     }
 
     @Basic
@@ -68,8 +58,7 @@ public class TPermission {
         TPermission that = (TPermission) o;
 
         if (permId != null ? !permId.equals(that.permId) : that.permId != null) return false;
-        if (permission != null ? !permission.equals(that.permission) : that.permission != null) return false;
-        if (roleId != null ? !roleId.equals(that.roleId) : that.roleId != null) return false;
+        if (permName != null ? !permName.equals(that.permName) : that.permName != null) return false;
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
 
         return true;
@@ -78,19 +67,18 @@ public class TPermission {
     @Override
     public int hashCode() {
         int result = permId != null ? permId.hashCode() : 0;
-        result = 31 * result + (permission != null ? permission.hashCode() : 0);
-        result = 31 * result + (roleId != null ? roleId.hashCode() : 0);
+        result = 31 * result + (permName != null ? permName.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         return result;
     }
 
     @ManyToMany(mappedBy = "tPermissions")
     @JsonIgnore
-    public Set<TRole> gettRoles() {
+    public List<TRole> gettRoles() {
         return tRoles;
     }
 
-    public void settRoles(Set<TRole> tRoles) {
+    public void settRoles(List<TRole> tRoles) {
         this.tRoles = tRoles;
     }
 }

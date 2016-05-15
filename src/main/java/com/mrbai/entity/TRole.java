@@ -1,12 +1,13 @@
 package com.mrbai.entity;
 
+import com.sun.istack.internal.Nullable;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created by MirBai
@@ -23,8 +24,8 @@ public class TRole implements Serializable{
     private String roleName;
     private String roleKey;
     private String description;
-    private Set<TUser> tUsers;
-    private Set<TPermission> tPermissions;
+    private List<TUser> tUsers;
+    private List<TPermission> tPermissions;
 
     @Id
     @GeneratedValue(generator = "uuid")
@@ -92,23 +93,24 @@ public class TRole implements Serializable{
         return result;
     }
 
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "tRole")
+    @OneToMany(mappedBy = "tRole",fetch = FetchType.LAZY)
     @JsonIgnore
-    public Set<TUser> gettUsers() {
+    public List<TUser> gettUsers() {
         return tUsers;
     }
 
-    public void settUsers(Set<TUser> tUsers) {
+    public void settUsers(List<TUser> tUsers) {
         this.tUsers = tUsers;
     }
 
     @ManyToMany
+    @Nullable
     @JoinTable(name = "t_role_perm", schema = "db_shiro", joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"), inverseJoinColumns = @JoinColumn(name = "perm_id", referencedColumnName = "perm_id"))
-    public Set<TPermission> gettPermissions() {
+    public List<TPermission> gettPermissions() {
         return tPermissions;
     }
 
-    public void settPermissions(Set<TPermission> tPermissions) {
+    public void settPermissions(List<TPermission> tPermissions) {
         this.tPermissions = tPermissions;
     }
 }

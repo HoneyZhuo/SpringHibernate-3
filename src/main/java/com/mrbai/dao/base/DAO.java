@@ -147,6 +147,13 @@ public interface DAO<T> {
     public Integer executeHql(String hql, Object... param);
 
     /**
+     *  @Author 白景川【baijc1234@126.com】
+     *  @Date 2016/5/14 11:10
+     *  @TODO 执行 where id in (ids) 类型的 HQL 语句,返回响应的数目
+     *  @notice query.setParameterList();
+     */
+    public Integer executeHqlIn(String hql, Object... param);
+    /**
      * @Author 白景川【baijc1234@126.com】
      * @Date 2016/4/24 0:44
      * @TODO 执行 HQL 语句,返回响应的数目

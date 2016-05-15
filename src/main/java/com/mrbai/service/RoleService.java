@@ -1,5 +1,6 @@
 package com.mrbai.service;
 
+import com.mrbai.entity.TPermission;
 import com.mrbai.entity.TRole;
 import com.mrbai.service.base.DaoService;
 
@@ -17,4 +18,12 @@ public interface RoleService extends DaoService {
     List<TRole> getRoleByPage(int pageNo);
 
     void addRole(TRole tRole);
+
+    int editRole(Object[] roles);
+
+    int deleteRole(Object[] roleIdList);
+
+    TRole getRoleByRoleId(String roleId);
+
+    void updateRolePerm(String roleId, List<TPermission> tPermissions);
 }

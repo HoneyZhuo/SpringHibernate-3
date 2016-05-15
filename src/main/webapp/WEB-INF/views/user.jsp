@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <html lang="zh-CN">
 <head>
     <meta http-equiv="pragma" content="no-cache">
@@ -136,14 +137,14 @@
             $("#newTele").val(telephone);
             $(":input[name='telephoneCopy']").val(telephone);
 
-            var roleKey = $buttParent.siblings("#roleKey").text();
-            if (roleKey == "SUPER"){
+            var roleName = $buttParent.siblings("#roleName").text();
+            if (roleName == "超级管理员"){
                 $("option[name='SUPER']").attr("selected", true);
                 $("option[name='SUPERCopy']").attr("selected", true);
-            }else if(roleKey == "ADMIN"){
+            }else if(roleName == "管理员"){
                 $("option[name='ADMIN']").attr("selected", true);
                 $("option[name='ADMINCopy']").attr("selected", true);
-            }else if(roleKey == "SIMPLE"){
+            }else if(roleName == "普通角色"){
                 $("option[name='SIMPLE']").attr("selected", true);
                 $("option[name='SIMPLECopy']").attr("selected", true);
             }
@@ -154,7 +155,7 @@
             $("#editUser").find("#selectorCopy").hide();;
             $("#editUser").modal('show');
         }
-        /* 通过为每一条数据赋予编辑按钮,调用editUser(editButton)函数,修改一条用户信息*/
+        /* 提交模态框中的数据,调用editUser(editButton)函数,修改一条用户信息*/
         function changeUser(subForm) {
             var userId = $(subForm).find(":input[name='userId']").val();
 
@@ -216,7 +217,7 @@
             var userIds = new Array();
             for (var i = 0;i < len; i++){
                 var userId = checkItem.eq(i).val();
-                userIds[i]=userId;
+                userIds[i] = userId;
             }
             return userIds;
         }
@@ -227,7 +228,25 @@
         }
         /* 通过导航栏删除按钮删除选中的数据,可以删除一条或多条数据 */
         function rootDeleUser(){
-
+            var userIds = checkItem();
+            if (userIds.length != 1){
+                alert("请选择一条数据")
+                return false;
+            }else {
+                if (confirm("是否删除选中的数据")){
+                    userIds = userIds.toString();//ajax传值到后台,支持字符串和 json 串
+                    $.post("${pageContext.request.contextPath}/material/delUsers", {userIds : userIds}, function (data) {
+                        if (data == undefined){
+                            alert("访问服务器失败，请稍后再试");
+                        }else {
+                            alert("删除成功");
+                            location.reload(true);
+                        }
+                    }).error(function () {
+                        alert("访问服务器失败，请稍后再试");
+                    });
+                }
+            }
         }
         /* 通过导航栏新增按钮,增加一条数据 */
         function rootAddUser() {
@@ -235,7 +254,7 @@
         }
         /* 为选中的记录分配角色,一次仅限选中一条 */
         function rootAssignRole() {
-
+            alert("");
         }
     </script>
 </head>
@@ -309,10 +328,12 @@
         <li class="active">用户管理</li>
     </ol>
     <div class="btn-group" style="padding-bottom: 5px">
-        <button class="btn btn-success" onclick="return rootAddUser()">新增</button>
-        <button class="btn btn-warning" onclick="return rootEditUser()">编辑</button>
+        <button class="btn btn-success" onclick="return rootAddUser()" disabled="disabled">新增</button>
+        <button class="btn btn-warning" onclick="return rootEditUser()" disabled="disabled">编辑</button>
         <button class="btn btn-danger" onclick="return rootDeleUser()">删除</button>
-        <button class="btn btn-primary" onclick="return rootAssignRole()">分配角色</button>
+        <%--<button class="btn btn-primary" onclick="return rootAssignRole()">分配角色</button>--%>
+        <a tabindex="0" class="btn btn-primary" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="
+        请点击右侧编辑按钮为用户分配角色">分配角色</a>
     </div>
     <table class="table table-hover table-condensed">
         <thead>
