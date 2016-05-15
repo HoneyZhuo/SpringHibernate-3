@@ -8,6 +8,7 @@ import com.mrbai.service.RoleService;
 import com.mrbai.service.UserService;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.codehaus.jackson.JsonGenerator;
