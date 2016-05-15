@@ -46,7 +46,7 @@
                             row.find("#email").text(users[i].email).attr("class","col-lg-2");
                             row.find("#telePhone").text(users[i].telephone).attr("class","col-lg-2");
                             row.find("#regDate").text(users[i].regDate).attr("class","col-lg-1");
-                            row.find("#button").append("<button class='btn btn-info' value='"+ users[i].userId +"' onclick='editUser(this)'>编辑</button><button class='btn btn-danger' value='"+ users[i].userId +"' onclick='deleteUser(this)'>删除</button>").attr("class","col-lg-2");
+                            row.find("#button").append("<shiro:hasPermission name='user:update'><button class='btn btn-info' value='"+ users[i].userId +"' onclick='editUser(this)'>编辑</button></shiro:hasPermission><shiro:hasPermission name='user:delete'><button class='btn btn-danger' value='"+ users[i].userId +"' onclick='deleteUser(this)'>删除</button></shiro:hasPermission>").attr("class","col-lg-2");
                             row.appendTo($("#MyTbody"));
                             row.show();
                         }
@@ -201,7 +201,7 @@
                     if (data !== undefined){
                         data = eval("("+ data +")");
                         alert(data.msg);
-                        window.location.href="${pageContext.request.contextPath}/test/toLogin";
+                        window.location.href="${pageContext.request.contextPath}/material/toLogin";
                     }else{
                         alert("访问服务器失败，请重试");
                     }
@@ -328,12 +328,20 @@
         <li class="active">用户管理</li>
     </ol>
     <div class="btn-group" style="padding-bottom: 5px">
-        <button class="btn btn-success" onclick="return rootAddUser()" disabled="disabled">新增</button>
-        <button class="btn btn-warning" onclick="return rootEditUser()" disabled="disabled">编辑</button>
-        <button class="btn btn-danger" onclick="return rootDeleUser()">删除</button>
+        <shiro:hasPermission name="user:create">
+            <button class="btn btn-success" onclick="return rootAddUser()" disabled="disabled">新增</button>
+        </shiro:hasPermission>
+        <shiro:hasPermission name="user:update">
+            <button class="btn btn-warning" onclick="return rootEditUser()" disabled="disabled">编辑</button>
+        </shiro:hasPermission>
+        <shiro:hasPermission name="user:delete">
+            <button class="btn btn-danger" onclick="return rootDeleUser()">删除</button>
+        </shiro:hasPermission>
         <%--<button class="btn btn-primary" onclick="return rootAssignRole()">分配角色</button>--%>
-        <a tabindex="0" class="btn btn-primary" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="
+        <shiro:hasPermission name="user:update">
+            <a tabindex="0" class="btn btn-primary" role="button" data-toggle="popover" data-trigger="focus" data-placement="top" data-content="
         请点击右侧编辑按钮为用户分配角色">分配角色</a>
+        </shiro:hasPermission>
     </div>
     <table class="table table-hover table-condensed">
         <thead>

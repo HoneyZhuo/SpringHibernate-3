@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <html lang="zh-CN">
 <head>
     <meta http-equiv="pragma" content="no-cache">
@@ -181,7 +182,9 @@
                     alert("访问服务器失败，请刷新页面重试");
                 });
                 $("#assignPerm").modal('show');
-
+                $('#assignPerm').on('hidden.bs.modal', function (e) {
+                    location.reload(false);
+                });
                 $(".perm-btn").click(function () {
                     /* 对于 checkbox 的点击事件，判断它点击之前的状态*/
                     if ($(this).find("input").is(':checked')){
@@ -279,7 +282,6 @@
         function assignPerm(tPerm) {
             var Item_per = "checkItem_per";
             var permNames = checkItem(Item_per).toString();
-            alert(permNames);
             var roleId = checkItem("checkItem")[0];
             var flag = true;
             $.ajax({
@@ -526,10 +528,21 @@
         <li class="active">角色管理</li>
     </ol>
     <div class="btn-group" style="padding-bottom: 5px">
-        <button class="btn btn-success" id="rootAddRole">新增</button>
-        <button class="btn btn-warning" id="rootEditRole">编辑</button>
-        <button class="btn btn-danger" id="rootDeleRole">删除</button>
-        <button class="btn btn-primary" id="rootAssignPerm">分配权限</button>
+        <shiro:hasPermission name="role:create">
+            <button class="btn btn-success" id="rootAddRole">新增</button>
+        </shiro:hasPermission>
+
+        <shiro:hasPermission name="role:update">
+            <button class="btn btn-warning" id="rootEditRole">编辑</button>
+        </shiro:hasPermission>
+
+        <shiro:hasPermission name="role:delete">
+            <button class="btn btn-danger" id="rootDeleRole">删除</button>
+        </shiro:hasPermission>
+
+        <shiro:hasPermission name="menu:create">
+            <button class="btn btn-primary" id="rootAssignPerm">分配权限</button>
+        </shiro:hasPermission>
     </div>
     <table class="table table-hover table-condensed" id="roleTable">
         <thead>

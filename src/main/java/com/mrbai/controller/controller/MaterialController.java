@@ -1,18 +1,22 @@
 package com.mrbai.controller.controller;
 
+import com.mrbai.controller.exception.IncorrectCaptchaException;
 import com.mrbai.entity.TPermission;
 import com.mrbai.entity.TRole;
 import com.mrbai.entity.TUser;
 import com.mrbai.service.PermissionSerice;
 import com.mrbai.service.RoleService;
 import com.mrbai.service.UserService;
-import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.authz.annotation.RequiresRoles;
+import org.apache.shiro.authc.ExcessiveAttemptsException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.LockedAccountException;
+import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.subject.Subject;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,11 +24,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by MirBai
@@ -34,7 +37,7 @@ import java.util.Set;
 @RequestMapping("/material")
 public class MaterialController {
 
-    private static final Logger logger = Logger.getLogger(MaterialController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MaterialController.class);
 
     @Resource(name = "userServiceImpl")
     UserService userService;
@@ -45,17 +48,36 @@ public class MaterialController {
     @Resource(name = "permissionServiceImpl")
     PermissionSerice permissionSerice;
 
-    ObjectMapper objectMapper = new ObjectMapper();
+    private ObjectMapper objectMapper = new ObjectMapper();
     JsonGenerator jsonGenerator;
 
-    /**
-     *  @Author 白景川【baijc1234@126.com】
-     *  @Date 2016/4/26 10:32
-     *  @Method getUserByPage
-     *  @Return java.lang.String
-     *  @TODO
-     *  @notice
-     */
+    @RequestMapping("/toLogin")
+    public String showLoginForm(HttpServletRequest request, Model model){
+        model.addAttribute("account", request.getParameter("account"));
+        String exceptionName = (String) request.getAttribute("shiroLoginFailure");
+        String error = null;
+        if(exceptionName != null ){
+            System.out.println(IncorrectCaptchaException.class.getClass().getName());
+            if(IncorrectCaptchaException.class.getName().equals(exceptionName)) {
+                error = "验证码错误";
+            } else if(UnknownAccountException.class.getName().equals(exceptionName)) {
+                error = "用户名/密码错误";
+            } else if(IncorrectCredentialsException.class.getName().equals(exceptionName)) {
+                error = "用户名/密码错误";
+            } else if(ExcessiveAttemptsException.class.getName().equals(exceptionName)) {
+                error = "尝试次数已经超过5次，请一个小时后再试";
+            } else if(LockedAccountException.class.getName().equals(exceptionName)) {
+                error = "您的帐号已经锁定，暂时不允许登录，请联系管理员";
+            }else if(exceptionName != null) {
+                error = "登录失败，错误信息：" + exceptionName;
+            }
+        }
+        if(error != null){
+            LOGGER.info("用户尝试登录系统失败  登录账号：{} 错误信息：{}",request.getParameter("account"),error);
+        }
+        model.addAttribute("error", error);
+        return "login";
+    }
 
     /* 用户管理 */
     @RequestMapping(value = "/getUserByPage", method = RequestMethod.POST, produces = "text/html;charset=UTF-8")
@@ -171,7 +193,6 @@ public class MaterialController {
             tRole.settPermissions(permissions);
             roleService.addRole(tRole);
             String roleId =tRole.getRoleId();
-            logger.info(roleId);
             if (roleId != null){
                 ReturnManager returnManager = new ReturnManager();
                 returnManager.setMsg(tRole);
@@ -306,13 +327,5 @@ public class MaterialController {
             }
         }
         return null;
-    }
-
-    @RequestMapping("/toMain")
-    public String toMain(Model model){
-        Subject subject = SecurityUtils.getSubject();
-        String account = (String) subject.getPrincipal();
-        model.addAttribute("account",account);
-        return "main";
     }
 }

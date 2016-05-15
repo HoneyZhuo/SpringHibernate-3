@@ -5,6 +5,7 @@ import com.mrbai.controller.exception.IncorrectCaptchaException;
 import com.mrbai.shiro.CaptchaUsernamePasswordToken;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.RememberMeAuthenticationToken;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
@@ -36,13 +37,16 @@ public class CaptchaFormAuthenticationFilter extends FormAuthenticationFilter {
     @Override
     protected boolean executeLogin(ServletRequest request, ServletResponse response) throws Exception {
         CaptchaUsernamePasswordToken token = (CaptchaUsernamePasswordToken) createToken(request, response);
-
         try {
             /*图形验证码验证*/
             doCaptchaValidate((HttpServletRequest) request, token);
             Subject subject = getSubject(request, response);
+            String rememberMe = request.getParameter("rememberMe");
+            if ("true".equalsIgnoreCase(rememberMe)){
+                token.setRememberMe(true);
+            }
             subject.login(token);
-            LOGGER.info(token.getUsername() + "====登录成功====");
+            LOGGER.info(token.getUsername() + "====登录成功====" + rememberMe);
             return onLoginSuccess(token, subject, request, response);
         } catch (AuthenticationException e) {
             LOGGER.info(token.getUsername() + "登录失败===" + e);
@@ -74,7 +78,8 @@ public class CaptchaFormAuthenticationFilter extends FormAuthenticationFilter {
         String account = getUsername(request);
         String password = getPassword(request);
         String captcha = getCaptcha(request);
-        return new CaptchaUsernamePasswordToken(account, password, captcha);
+        boolean rememberMe = isRememberMe(request);
+        return new CaptchaUsernamePasswordToken(account, password, captcha,rememberMe);
     }
 
     public static final String DEFAULT_CAPTCHA_PARAM = "captcha";

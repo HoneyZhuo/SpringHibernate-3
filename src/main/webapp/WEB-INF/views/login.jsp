@@ -173,6 +173,9 @@
             }
             return false;
         }
+        if ($("#rememberMe").is(':checked')){
+            $(":input[name='rememberMe']").val("true");
+        }
     }
     function register() {
         window.location.href = "${pageContext.request.contextPath}/register.jsp";
@@ -193,7 +196,7 @@
         <div class="login-content">
             <div class="form">
                 <form id="bj-form" onsubmit="return bj_submit()"
-                      action="${pageContext.request.contextPath}/test/toLogin" method="post">
+                      action="${pageContext.request.contextPath}/material/toLogin" method="post">
                     <div class="form-group">
                         <div class="col-xs-12  ">
                             <div class="input-group">
@@ -229,7 +232,8 @@
                             <button type="submit" class="btn btn-sm btn-info" id="submit"><span
                                     class="glyphicon glyphicon-off"></span> 登录
                             </button>
-                            <div><input type="checkbox"/>&nbsp;记住我</div>
+                            <div><input id="rememberMe" type="checkbox"/>&nbsp;记住我
+                            <input name="rememberMe" hidden="hidden"/></div>
                         </div>
                     </div>
                     <div class="form-group">
