@@ -1,6 +1,8 @@
 package com.mrbai.service.base.Impl;
 
 import com.mrbai.service.base.DaoService;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

@@ -42,7 +42,8 @@ public class CaptchaFormAuthenticationFilter extends FormAuthenticationFilter {
             doCaptchaValidate((HttpServletRequest) request, token);
             Subject subject = getSubject(request, response);
             subject.login(token);
-            LOGGER.info(token.getUsername() + "====登录成功====");
+            String host =  token.getHost();
+            LOGGER.info(token.getUsername() + "====登录成功====", host);
             return onLoginSuccess(token, subject, request, response);
         } catch (AuthenticationException e) {
             LOGGER.info(token.getUsername() + "登录失败===" + e);
@@ -75,7 +76,8 @@ public class CaptchaFormAuthenticationFilter extends FormAuthenticationFilter {
         String password = getPassword(request);
         String captcha = getCaptcha(request);
         boolean rememberMe = isRememberMe(request);
-        return new CaptchaUsernamePasswordToken(account, password, captcha,rememberMe);
+        String host = getHost(request);
+        return new CaptchaUsernamePasswordToken(account, password, captcha,rememberMe, host);
     }
 
     public static final String DEFAULT_CAPTCHA_PARAM = "captcha";

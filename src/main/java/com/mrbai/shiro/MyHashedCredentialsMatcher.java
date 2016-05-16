@@ -2,11 +2,12 @@ package com.mrbai.shiro;
 
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SaltedAuthenticationInfo;
+import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
-import org.apache.shiro.codec.Base64;
-import org.apache.shiro.codec.Hex;
-import org.apache.shiro.crypto.hash.AbstractHash;
+import org.apache.shiro.cache.Cache;
+import org.apache.shiro.cache.CacheManager;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by MirBai
@@ -17,8 +18,35 @@ import org.apache.shiro.crypto.hash.AbstractHash;
  */
 public class MyHashedCredentialsMatcher extends HashedCredentialsMatcher {
 
+    private Cache<String, AtomicInteger> passwordRetryCache;
+
+    public MyHashedCredentialsMatcher(CacheManager cacheManager) {
+        passwordRetryCache = cacheManager.getCache("passwordRetryCache");
+    }
+
+    @Override
     public boolean doCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) {
+        String account = (String)token.getPrincipal();
+        //retry count + 1
+        AtomicInteger retryCount = passwordRetryCache.get(account);
+        if(retryCount == null) {
+            retryCount = new AtomicInteger(0);
+            passwordRetryCache.put(account, retryCount);
+        }
+        if(retryCount.incrementAndGet() > 5) {
+            //if retry count > 5 throw
+            throw new ExcessiveAttemptsException();
+        }
+
         boolean matches = super.doCredentialsMatch(token, info);
+        if(matches) {
+            //clear retry count
+            passwordRetryCache.remove(account);
+        }
         return matches;
     }
+    /*public boolean doCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) {
+        boolean matches = super.doCredentialsMatch(token, info);
+        return matches;
+    }*/
 }

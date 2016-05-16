@@ -1,32 +1,22 @@
 package com.mrbai.controller.controller;
 
-import com.mrbai.controller.exception.IncorrectCaptchaException;
 import com.mrbai.entity.TRole;
 import com.mrbai.entity.TUser;
 import com.mrbai.service.RoleService;
 import com.mrbai.service.UserService;
-import com.mrbai.shiro.CaptchaUsernamePasswordToken;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by MirBai
