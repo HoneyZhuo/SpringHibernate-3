@@ -131,7 +131,7 @@ public class UserController {
         java.sql.Date reg_date = new java.sql.Date(new Date().getTime());
         tUser.setRegDate(reg_date);
 
-        String roleKey = "SUPER";
+        String roleKey = "SIMPLE";
         TRole tRole = roleService.getRoleByRoleKey(roleKey);
         tUser.settRole(tRole);
 

@@ -95,7 +95,7 @@
         </div>
     </div>
     <div class="row" style="margin: -1px">
-        <div class="col-md-2 btn-group-vertical label-info" role="group" style="padding: 0px;height: 570px" aria-label="...">
+        <div class="col-md-2 btn-group-vertical label-info" role="group" style="padding: 0px;height: 100%" aria-label="...">
             <button type="button" class="btn btn-info mb_btn" id="userManage">用户管理</button>
             <button type="button" class="btn btn-info mb_btn" id="roleManage">角色管理</button>
             <button type="button" class="btn btn-info mb_btn" id="menuManage">菜单管理</button>

@@ -1,9 +1,13 @@
 package com.mrbai.entity;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Cache;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.sql.Date;
 
@@ -14,6 +18,7 @@ import java.sql.Date;
 @Entity
 @Table(name = "t_user", schema = "db_shiro")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "salt"})
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class TUser implements Serializable{
 
     private static final long serialVersionUID = 1L;

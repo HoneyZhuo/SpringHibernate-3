@@ -36,17 +36,13 @@ public class CaptchaFormAuthenticationFilter extends FormAuthenticationFilter {
      */
     @Override
     protected boolean executeLogin(ServletRequest request, ServletResponse response) throws Exception {
-        CaptchaUsernamePasswordToken token = (CaptchaUsernamePasswordToken) createToken(request, response);
+        CaptchaUsernamePasswordToken token = createToken(request, response);
         try {
             /*图形验证码验证*/
             doCaptchaValidate((HttpServletRequest) request, token);
             Subject subject = getSubject(request, response);
-            String rememberMe = request.getParameter("rememberMe");
-            if ("true".equalsIgnoreCase(rememberMe)){
-                token.setRememberMe(true);
-            }
             subject.login(token);
-            LOGGER.info(token.getUsername() + "====登录成功====" + rememberMe);
+            LOGGER.info(token.getUsername() + "====登录成功====");
             return onLoginSuccess(token, subject, request, response);
         } catch (AuthenticationException e) {
             LOGGER.info(token.getUsername() + "登录失败===" + e);

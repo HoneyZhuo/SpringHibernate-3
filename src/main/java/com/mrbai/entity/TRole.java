@@ -3,7 +3,9 @@ package com.mrbai.entity;
 import com.sun.istack.internal.Nullable;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Cache;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,6 +16,7 @@ import java.util.List;
  * on 2016/5/11.
  */
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "t_role", schema = "db_shiro")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class TRole implements Serializable{

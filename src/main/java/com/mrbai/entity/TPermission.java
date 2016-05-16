@@ -2,6 +2,8 @@ package com.mrbai.entity;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.List;
 @Entity
 @Table(name = "t_permission", schema = "db_shiro")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class TPermission {
     private String permId;
     private String permName;

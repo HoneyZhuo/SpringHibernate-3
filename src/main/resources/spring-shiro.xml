@@ -6,8 +6,9 @@
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd">
 
+
     <!--告诉自定义 realm 校验密码时使用的密码规则-->
-    <bean id="credentialsMatcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+    <bean id="credentialsMatcher" class="com.mrbai.shiro.MyHashedCredentialsMatcher">
         <property name="hashAlgorithmName" value="md5"/>
         <property name="hashIterations" value="1"/>
         <property name="storedCredentialsHexEncoded" value="true"/>
