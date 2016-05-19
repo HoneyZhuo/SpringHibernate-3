@@ -15,6 +15,7 @@
          *  @Date 2016/5/12 12:19
          *  @TODO 用户管理
          */
+
         /* 获取用户信息，并分页 */
         function searchUser(p) {
             $.ajax({
@@ -39,7 +40,7 @@
                                 row.attr("class","warning");
                             }
                             row.find("#userId").text(users[i].userId).attr("hidden","hidden");
-                            row.find("#rowNo").append("<div class='row'><input name='checkItem' type='checkbox' value='"+ users[i].userId +"' class='col-lg-6'/><span class='col-lg-6'>"+ (i+1) +"</span></div>");
+                            row.find("#rowNo").append("<div class='row'><input name='checkedItem' type='checkbox' value='"+ users[i].userId +"' class='col-lg-6'/><span class='col-lg-6'>"+ (i+1) +"</span></div>");
                             row.find("#userName").text(users[i].userName).attr("class","col-lg-1");
                             row.find("#account").text(users[i].account).attr("class","col-lg-1");
                             row.find("#roleName").text(users[i].tRole.roleName).attr("class","col-lg-1");
@@ -58,7 +59,9 @@
         }
         /* 显示用户信息列表 */
         function showUsers() {
+            $("#MyTbody_role").nextAll().remove();
             var pageNo = 1;
+            $("#currentPageNo_role").text(pageNo);
             searchUser(pageNo);
             $("#prev").click(function () {
                 if (pageNo > 1){
@@ -70,29 +73,30 @@
                     $(this).attr("class","disabled");
                 }
             });
+
             $("#next").click(function () {
-                $("#checkAll").prop("checked",false);
-                pageNo ++;
-                searchUser(pageNo);
-                var a = $("tbody").children("tr");
-                if (a.size() < 6 && a.size() > 1){
-                    $(this).attr("onclick","disabled");
-                }
-                if (a.size() == 1){
-                    pageNo --;
+                var type = "User";
+                searchCount(type);
+                var count = $(":input[name='countUser']").val();
+                if (count <= pageNo*5){
+                    $("#next").attr("class","disabled");
                     alert("已经是最后一页");
                     return false;
+                }else{
+                    $("#checkAll").prop("checked",false);
+                    pageNo ++;
+                    searchUser(pageNo);
+                    $("#currentPageNo").text(pageNo);
                 }
-                $("#currentPageNo").text(pageNo);
             });
             $("#showUserTable").show();
             $("#showRoleTable").hide();
             $("#checkAll").click(function () {
                 if ($(this).is(':checked')){
-                    $(":input[name='checkItem']:checkbox").prop("checked",true);
+                    $(":input[name='checkedItem']:checkbox").prop("checked",true);
                 }else{
-                    $(":input[name='checkItem']:checkbox").prop("checked",false);
-                    $(":input[name='checkItem']:checkbox").prop("checked","");
+                    $(":input[name='checkedItem']:checkbox").prop("checked",false);
+                    $(":input[name='checkedItem']:checkbox").prop("checked","");
                 }
             });
         }
@@ -210,26 +214,18 @@
                 });
             }
         }
-        /* 获取选中的记录,并返回所有被选中记录的集合 */
-        function checkItem() {
-            var checkItem = $(":input[name='checkItem']:checked");
-            var len = checkItem.length;
-            var userIds = new Array();
-            for (var i = 0;i < len; i++){
-                var userId = checkItem.eq(i).val();
-                userIds[i] = userId;
-            }
-            return userIds;
-        }
+
         /* 通过导航栏编辑按钮修改一条数据,一次仅限修改一条 */
         function rootEditUser() {
-            alert(checkItem()[0]);
+            var item = "checkedItem";
+            alert(checkItem(item)[0]);
             return false;
         }
         /* 通过导航栏删除按钮删除选中的数据,可以删除一条或多条数据 */
         function rootDeleUser(){
-            var userIds = checkItem();
-            if (userIds.length != 1){
+            var item = "checkedItem";
+            var userIds = checkItem(item);
+            if (userIds.length < 1){
                 alert("请选择一条数据")
                 return false;
             }else {
@@ -380,7 +376,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" id="currentPageNo">1</a>
+                    <a href="#" id="currentPageNo">1</a><input name="countUser" hidden="hidden"/>
                 </li>
                 <li>
                     <a href="javascript:void(0)" aria-label="Next" id="next">

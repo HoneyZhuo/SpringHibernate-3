@@ -4,6 +4,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <html>
 <head>
+
     <meta http-equiv="pragma" content="no-cache">
     <meta http-equiv="cache-control" content="no-cache">
     <meta http-equiv="expires" content="0">
@@ -27,23 +28,39 @@
             width: 100%;
             height: 100%;
         }
-        td{text-align: center}
-        th{text-align: center}
-        li{text-align: center}
-        body{padding-top: 55px;}
-        .mb_form{
+
+        td {
+            text-align: center
+        }
+
+        th {
+            text-align: center
+        }
+
+        li {
+            text-align: center
+        }
+
+        body {
+            padding-top: 55px;
+        }
+
+        .mb_form {
             text-align: center;
         }
-        .mb_btn{
+
+        .mb_btn {
             width: 200px;
         }
-        .container{
+
+        .container {
             padding-right: 0px;
             padding-left: 0px;
         }
-        .pageLocation{
+
+        .pageLocation {
             padding: 100px;
-            padding-top: 5px;
+            padding-bottom: 20px;
         }
     </style>
     <script type="text/javascript">
@@ -59,6 +76,35 @@
             /* 初始化弹出框 */
             $('[data-toggle="popover"]').popover();
         });
+        /* 获取选中的记录,并返回所有被选中记录的value集合 */
+        function checkItem(Item) {
+            var checkItem = $(":input[name='"+ Item +"']:checked");
+            var len = checkItem.length;
+            var checkedVals = new Array();
+            for (var i = 0; i < len; i++) {
+                var checkedVal = checkItem.eq(i).val();
+                checkedVals[i] = checkedVal;
+            }
+            return checkedVals;
+        }
+        /* 获取总记录数 */
+        function searchCount(type) {
+            $.ajax({
+                url:"${pageContext.request.contextPath}/material/search"+type+"Count",
+                method:"POST",
+                async:false,
+                success:function (data) {
+                    if (data == undefined){
+                        alert("访问服务器失败,请稍后再试");
+                    }else{
+                        var count = eval("("+data+")").msg;
+                        $(":input[name='count"+type+"']").val(count);
+                    }
+                }
+            }).error(function () {
+                alert("访问服务器失败,请稍后再试")
+            });
+        }
     </script>
 </head>
 <body>
@@ -80,7 +126,10 @@
                         <ul class="nav navbar-nav navbar-right">
                             <li class="dropdown" style="width: 160px">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                   aria-haspopup="true" aria-expanded="false"><img src="${pageContext.request.contextPath}/static/image/MyLove.jpeg" style="width: 25px; height: 25px" class="img-circle">${account}<span class="caret"></span></a>
+                                   aria-haspopup="true" aria-expanded="false"><img
+                                        src="${pageContext.request.contextPath}/static/image/MyLove.jpeg"
+                                        style="width: 25px; height: 25px" class="img-circle">${account}<span
+                                        class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="#">Settings</a></li>
                                     <li><a href="#">密码修改</a></li>
@@ -95,29 +144,15 @@
         </div>
     </div>
     <div class="row" style="margin: -1px">
-        <div class="col-md-2 btn-group-vertical label-info" role="group" style="padding: 0px;height: 100%" aria-label="...">
-            <button type="button" class="btn btn-info mb_btn" id="userManage">用户管理</button>
-            <button type="button" class="btn btn-info mb_btn" id="roleManage">角色管理</button>
-            <button type="button" class="btn btn-info mb_btn" id="menuManage">菜单管理</button>
-            <div class="btn-group mb_btn" role="group">
-                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Dropdown
-                    <span class="caret"></span>
-                </button>
-                <ul class="progress-bar-info dropdown-menu" style="width: 202px">
-                    <li class="mb_btn"><a href="#">Dropdown link</a></li>
-                    <li class="mb_btn"><a href="#">Dropdown link</a></li>
-                </ul>
-            </div>
-            <div class="btn-group mb_btn" role="group">
-                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Dropdown
-                    <span class="caret"></span>
-                </button>
-                <ul class="progress-bar-info dropdown-menu" style="width: 202px">
-                    <li class="mb_btn"><a href="#">Dropdown link</a></li>
-                    <li class="mb_btn"><a href="#">Dropdown link</a></li>
-                </ul>
+        <div class="col-md-2 label-info accordion" role="group" style="padding: 0px;padding-top:20px;padding-left:12px;height: 100%">
+            <div class="accordion-group">
+                <div class="accordion-heading">
+                    <button type="button" class="btn btn-warning mb_btn accordion-toggle" data-toggle="collapse" data-parent="#accordion-772345" href="#sysBasic" contenteditable="true">系统基础管理</button>
+                </div>
+                <div id="sysBasic" class="accordion-body collapse" style="height: 0px;">
+                    <button type="button" class="btn btn-primary accordion-inner mb_btn" contenteditable="true" id="userManage">用户管理</button>
+                    <button type="button" class="btn btn-primary accordion-inner mb_btn" contenteditable="true" id="roleManage">角色管理</button>
+                </div>
             </div>
         </div>
         <%-- 用户管理 --%>

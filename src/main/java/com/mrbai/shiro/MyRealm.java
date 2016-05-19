@@ -4,10 +4,7 @@ import com.mrbai.entity.TPermission;
 import com.mrbai.entity.TRole;
 import com.mrbai.entity.TUser;
 import com.mrbai.service.UserService;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.cache.CacheManager;
@@ -59,6 +56,11 @@ public class MyRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         String account = (String) token.getPrincipal();
         TUser tUser = userService.getUserByAccount(account);
+
+        /*if(Boolean.TRUE.equals(tUser.getLocked())) {
+            throw new LockedAccountException(); //帐号锁定
+        }*/
+
         if (tUser != null){
 //            SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(tUser.getAccount(), tUser.getPassword(),getName());
             //交给 AuthenticatingRealm 使用 CredentialsMatcher 进行密码匹配， 如果觉得人家

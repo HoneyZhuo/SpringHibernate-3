@@ -65,4 +65,11 @@ public class RoleServiceImpl extends DaoServiceImpl implements DaoService, RoleS
         tRole.settPermissions(tPermissions);
         tRoleDAO.update(tRole);
     }
+
+    @Override
+    public Long getRoleCount() {
+        String hql="select count(*) from TRole";
+        Long count = (Long) tRoleDAO.likeCount(hql);
+        return count;
+    }
 }

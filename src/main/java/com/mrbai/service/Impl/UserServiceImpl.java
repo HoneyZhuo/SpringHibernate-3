@@ -81,4 +81,11 @@ public class UserServiceImpl extends DaoServiceImpl implements UserService,DaoSe
         String hql = "delete from TUser where userId in (?1)";
         return tUserDAO.executeHqlIn(hql, userIdList);
     }
+
+    @Override
+    public Long getUserCount() {
+        String hql="select count(*) from TUser";
+        Long count = (Long) tUserDAO.likeCount(hql);
+        return count;
+    }
 }

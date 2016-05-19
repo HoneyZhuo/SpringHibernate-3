@@ -54,7 +54,9 @@
         }
         /* 点击角色管理时，显示角色信息列表 */
         function showRoles() {
+            $("#myTbody").nextAll().remove();
             var pageNo = 1;
+            $("#currentPageNo").text(pageNo);
             searchRole(pageNo);
             $("#prev_role").click(function () {
                 if (pageNo > 1) {
@@ -67,19 +69,19 @@
                 }
             });
             $("#next_role").click(function () {
-                $("#checkAll").prop("checked", false);
-                pageNo++;
-                searchRole(pageNo);
-                var a = $("tbody").children("tr");
-                if (a.size() < 6 && a.size() > 1) {
-                    $(this).attr("onclick", "disabled");
-                }
-                if (a.size() == 1) {
-                    pageNo--;
-                    alert("已经是最后一页");
+                var type = "Role";
+                searchCount(type);
+                var count = $(":input[name='countRole']").val();
+                if (count <= pageNo * 5){
+                    $(this).attr("class", "disabled");
+                    alert("已经是最后一页")
                     return false;
+                }else{
+                    $("#checkAll").prop("checked", false);
+                    pageNo++;
+                    searchRole(pageNo);
+                    $("#currentPageNo_role").text(pageNo);
                 }
-                $("#currentPageNo_role").text(pageNo);
             });
             $("#showRoleTable").show();
             $("#showUserTable").hide();
@@ -194,17 +196,6 @@
                     }
                 });//
             });
-        }
-        /* 获取选中的记录,并返回所有被选中记录的value集合 */
-        function checkItem(Item) {
-            var checkItem = $(":input[name='"+ Item +"']:checked");
-            var len = checkItem.length;
-            var checkedVals = new Array();
-            for (var i = 0; i < len; i++) {
-                var checkedVal = checkItem.eq(i).val();
-                checkedVals[i] = checkedVal;
-            }
-            return checkedVals;
         }
         /* 新增角色 */
         function addRole(tRole) {
@@ -578,7 +569,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" id="currentPageNo_role">1</a>
+                    <a href="#" id="currentPageNo_role">1</a><input name="countRole" hidden="hidden"/>
                 </li>
                 <li>
                     <a href="javascript:void(0)" aria-label="Next" id="next_role">

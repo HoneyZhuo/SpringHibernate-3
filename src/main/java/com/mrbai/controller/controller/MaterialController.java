@@ -97,6 +97,7 @@ public class MaterialController {
         return null;
     }
 
+    /* 删除一条或多条用户信息 */
     @RequestMapping(value = "/deleteUser",method = RequestMethod.POST,produces = "text/html;charset=utf-8")
     public @ResponseBody String deleteUser(String userId){
         boolean retu = userService.deleteUser(userId);
@@ -114,6 +115,7 @@ public class MaterialController {
         return null;
     }
 
+    /* 删除一条用户信息 */
     @RequestMapping(value = "/delUsers", method = RequestMethod.POST, produces = "text/html;charset=utf-8")
     public @ResponseBody String delUsers(String userIds){
 
@@ -162,8 +164,21 @@ public class MaterialController {
         return null;
     }
 
-
-
+    /* get user count*/
+    @RequestMapping("/searchUserCount")
+    public @ResponseBody String searchUserCount(){
+        Long count = userService.getUserCount();
+        ReturnManager returnManager = new ReturnManager();
+        returnManager.setMsg(count);
+        returnManager.setStat(true);
+        try {
+            String success = objectMapper.writeValueAsString(returnManager);
+            return success;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     /* 角色管理 */
     @RequestMapping(value = "/getRoleByPage", method = RequestMethod.POST, produces = "text/html;charset=UTF-8")
     public @ResponseBody String getRoleByPage(int pageNo){
@@ -252,6 +267,22 @@ public class MaterialController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+        return null;
+    }
+
+    /* get role count*/
+    @RequestMapping("/searchRoleCount")
+    public @ResponseBody String searchRoleCount(){
+        Long count = roleService.getRoleCount();
+        ReturnManager returnManager = new ReturnManager();
+        returnManager.setMsg(count);
+        returnManager.setStat(true);
+        try {
+            String success = objectMapper.writeValueAsString(returnManager);
+            return success;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
     }

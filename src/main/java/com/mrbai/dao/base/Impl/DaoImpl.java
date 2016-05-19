@@ -79,7 +79,7 @@ public class DaoImpl<T> implements DAO<T> {
             page = 1;
         }
         if (rows == null || rows < 1){
-            rows = 7;
+            rows = 5;
         }
         Query query = getSession().createQuery(hql);
         if (param != null && param.length > 0){
@@ -96,7 +96,7 @@ public class DaoImpl<T> implements DAO<T> {
             page = 1;
         }
         if (rows == null || rows < 1){
-            rows = 7;
+            rows = 5;
         }
         Query query = getSession().createQuery(hql);
         if (param != null && param.size() > 0){

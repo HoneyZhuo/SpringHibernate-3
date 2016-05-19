@@ -26,4 +26,6 @@ public interface RoleService extends DaoService {
     TRole getRoleByRoleId(String roleId);
 
     void updateRolePerm(String roleId, List<TPermission> tPermissions);
+
+    Long getRoleCount();
 }
